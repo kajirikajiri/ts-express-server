@@ -24,5 +24,5 @@ jobs:
         with:
           push: true
           tags: |
-            docker.pkg.github.com/${{ github.repository }}/kajirikajiri:${{ github.sha }}
-            docker.pkg.github.com/${{ github.repository }}/kajirikajiri:${{ github.ref }}
+            docker.pkg.github.com/kajirikajiri/kajirikajiri/${{ github.repository }}:${{ github.sha }}
+            docker.pkg.github.com/kajirikajiri/kajirikajiri/${{ github.repository }}:${{ github.ref }}
