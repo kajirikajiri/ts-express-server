@@ -44,8 +44,8 @@ jobs:
           if [ $(docker ps -q | wc -l) != 0 ] ; then docker stop $(docker ps -q);fi &&
           docker container prune --force &&
           if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi &&
-          docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:b01581b3766a3083461c99773f21359e92267a35 &&
-          docker run -d -p 3000:3000 51429776b715
+          docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest &&
+          docker run -d -p 3000:3000 $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")
           '
 
           # SSHのポートを閉じる
