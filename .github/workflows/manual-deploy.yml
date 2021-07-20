@@ -19,7 +19,7 @@ jobs:
           HOST_NAME: ${{ secrets.HOST_NAME }}
           ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
           SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          SECURITY_GROUP: ${{ secrets.SECURITY_GROUP }}
+          SECURITY_GROUP: ${{ secrets.SECURITY_GROUP_ID }}
         run: |
           # https://github.com/haythem/public-ip
           IP_ADDRESS=`echo ${{ steps.ip.outputs.ipv4 }}`
