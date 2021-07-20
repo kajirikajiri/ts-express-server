@@ -58,7 +58,6 @@ jobs:
           # SSH接続して、git pullする
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
-          cd /home/ec2-user &&
           if [ $(docker ps -q | wc -l) != 0 ] ; then docker stop $(docker ps -q);fi &&
           docker container prune --force &&
           if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi &&
