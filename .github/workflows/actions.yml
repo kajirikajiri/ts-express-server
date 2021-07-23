@@ -1,0 +1,153 @@
+name: publish and run docker image
+on:
+  workflow_dispatch:
+    branches:
+      - master
+  push:
+    branches:
+      - develop
+      - master
+jobs:
+  push_to_registry:
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||  (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
+    name: Push Docker image to GitHub Packages
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build container image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/ts-express-server:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/ts-express-server:latest
+  deploy_to_staging:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    needs: push_to_registry
+    name: Deploy to GCP Staging
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - uses: actions/checkout@v2
+      - name: Deploy
+        env:
+          PRIVATE_KEY: ${{ secrets.GCP_PRIVATE_KEY }}
+          USER_NAME: ${{ secrets.GCP_USER_NAME }}
+          HOST_NAME: ${{ secrets.GCP_HOST_NAME }}
+          SECURITY_GROUP: ${{ secrets.GCP_SECURITY_GROUP_NAME }}
+          MYSQL_HOST: ${{ secrets.STG_MYSQL_HOST }}
+          MYSQL_PORT: ${{ secrets.STG_MYSQL_PORT }}
+          MYSQL_USER: ${{ secrets.STG_MYSQL_USER }}
+          MYSQL_PASS: ${{ secrets.STG_MYSQL_PASS }}
+          MYSQL_DATABASE: ${{ secrets.STG_MYSQL_DATABASE }}
+        run: |
+          # https://github.com/haythem/public-ip
+          IP_ADDRESS=`echo ${{ steps.ip.outputs.ipv4 }}`
+
+          # SSHポートを開放する
+          gcloud compute firewall-rules create ${SECURITY_GROUP} --action=ALLOW --rules=tcp:22 --source-ranges="$IP_ADDRESS"/32
+
+          # SSH接続して、git pullする
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          command1='if [ $(docker ps -q | wc -l) != 0 ] ; then docker stop $(docker ps -q);fi && docker container prune --force && if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi && docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest && docker run -d -p 3000:3000 -e HOST='
+          command2=${MYSQL_HOST}
+          command3=' -e PORT='
+          command4=${MYSQL_PORT}
+          command5=' -e USER='
+          command6=${MYSQL_USER}
+          command7=' -e PASS='
+          command8=${MYSQL_PASS}
+          command9=' -e DATABASE='
+          command10=${MYSQL_DATABASE}
+          command11=' $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")'
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} $command1$command2$command3$command4$command5$command6$command7$command8$command9$command10$command11
+      - name: Close port
+        if: ${{ always() }}
+        env:
+          SECURITY_GROUP: ${{ secrets.GCP_SECURITY_GROUP_NAME }}
+        run: |
+          gcloud compute firewall-rules delete ${SECURITY_GROUP}
+  deploy_to_production:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
+    needs: push_to_registry
+    name: Deploy to AWS Production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - uses: actions/checkout@v2
+      - name: Deploy
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          HOST_NAME: ${{ secrets.HOST_NAME }}
+          ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          SECURITY_GROUP: ${{ secrets.SECURITY_GROUP_ID }}
+          MYSQL_HOST: ${{ secrets.PROD_MYSQL_HOST }}
+          MYSQL_PORT: ${{ secrets.PROD_MYSQL_PORT }}
+          MYSQL_USER: ${{ secrets.PROD_MYSQL_USER }}
+          MYSQL_PASS: ${{ secrets.PROD_MYSQL_PASS }}
+          MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
+        run: |
+          # https://github.com/haythem/public-ip
+          IP_ADDRESS=`echo ${{ steps.ip.outputs.ipv4 }}`
+
+          # AWS CLIをインストール
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install --update
+          aws --version
+
+          # AWS CLIに設定をする
+          printf "${ACCESS_KEY}\n${SECRET_ACCESS_KEY}\nap-northeast-1\njson\n" | aws configure --profile eyemovic-dev
+          aws configure get aws_access_key_id --profile eyemovic-dev
+
+          # SSHポートを開放する
+          aws --profile eyemovic-dev ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP} --protocol tcp --port 22 --cidr "$IP_ADDRESS"/32
+
+          # SSH接続して、git pullする
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          command1='if [ $(docker ps -q | wc -l) != 0 ] ; then docker stop $(docker ps -q);fi && docker container prune --force && if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi && docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest && docker run -d -p 3000:3000 -e HOST='
+          command2=${MYSQL_HOST}
+          command3=' -e PORT='
+          command4=${MYSQL_PORT}
+          command5=' -e USER='
+          command6=${MYSQL_USER}
+          command7=' -e PASS='
+          command8=${MYSQL_PASS}
+          command9=' -e DATABASE='
+          command10=${MYSQL_DATABASE}
+          command11=' $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")'
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} $command1$command2$command3$command4$command5$command6$command7$command8$command9$command10$command11
+      - name: Close port
+        env:
+          SECURITY_GROUP: ${{ secrets.SECURITY_GROUP_ID }}
+        if: ${{ always() }}
+        run: |
+          # SSHのポートを閉じる
+          aws --profile eyemovic-dev ec2 revoke-security-group-ingress --group-id ${SECURITY_GROUP} --protocol tcp --port 22 --cidr "$IP_ADDRESS"/32
