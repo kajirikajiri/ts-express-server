@@ -11,4 +11,26 @@ services:
       - '3000:3000'
     volumes:
       - .:/app
+    networks:
+      - backend
+  mysql:
+    image: mysql:8
+    env_file: ./mysql.env
+    #環境変数設定。タイムゾーンを日本時間に設定。
+    environment:
+      - TZ=Asia/Tokyo
+    ports:
+      - '3306:3306'
+    volumes:
+      #mysqlのデフォルト設定ファイルを上書き。:roでコンテナ側からは読み取り専用設定。
+      - ./mysql/conf:/etc/mysql/conf.d/:ro
+      #mysqldataにマウントすることで、コンテナを削除してもデーターは残るように設定。
+      - mysqldata:/var/lib/mysql
+    networks:
+      - backend
+networks:
+  backend:
+
+volumes:
+  mysqldata:
 
