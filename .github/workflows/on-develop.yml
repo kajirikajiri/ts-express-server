@@ -44,6 +44,11 @@ jobs:
           USER_NAME: ${{ secrets.GCP_USER_NAME }}
           HOST_NAME: ${{ secrets.GCP_HOST_NAME }}
           SECURITY_GROUP: ${{ secrets.GCP_SECURITY_GROUP_NAME }}
+          MYSQL_HOST: ${{ secrets.STG_MYSQL_HOST }}
+          MYSQL_PORT: ${{ secrets.STG_MYSQL_PORT }}
+          MYSQL_USER: ${{ secrets.STG_MYSQL_USER }}
+          MYSQL_PASS: ${{ secrets.STG_MYSQL_PASS }}
+          MYSQL_DATABASE: ${{ secrets.STG_MYSQL_DATABASE }}
         run: |
           # https://github.com/haythem/public-ip
           IP_ADDRESS=`echo ${{ steps.ip.outputs.ipv4 }}`
@@ -58,7 +63,7 @@ jobs:
           docker container prune --force &&
           if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi &&
           docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest &&
-          docker run -d -p 3000:3000 $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")
+          docker run -d -p 3000:3000 $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}") -e HOST=${MYSQL_HOST} -e PORT=${MYSQL_PORT} -e USER=${MYSQL_USER} -e PASS=${MYSQL_PASS} -e DATABASE=${MYSQL_DATABASE}
           '
 
           # SSHのポートを閉じる

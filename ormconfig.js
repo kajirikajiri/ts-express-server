@@ -1,11 +1,11 @@
-{
+module.exports = {
    "type": "mysql",
-   "host": "mysql",
-   "port": 3306,
-   "username": "root",
-   "password": "admin",
-   "database": "test",
-   "synchronize": true,
+   "host": process.env.HOST,
+   "port": process.env.PORT,
+   "username": process.env.USER,
+   "password": process.env.PASS,
+   "database": process.env.DATABASE,
+   "synchronize": false,
    "logging": false,
    "entities": [
       "src/entity/**/*.ts"

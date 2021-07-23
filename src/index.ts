@@ -3,19 +3,7 @@ import * as express from 'express'
 import {createConnection} from "typeorm";
 import {User} from "./entity/User";
 
-const connection = createConnection({
-  type: "mysql",
-  host: "mysql",
-  port: 3306,
-  username: "root",
-  password: "admin",
-  database: "test",
-  entities: [
-      User
-  ],
-  synchronize: true,
-  logging: false
-})
+const connection = createConnection()
 
 const app: express.Express = express()
 
