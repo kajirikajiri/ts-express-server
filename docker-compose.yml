@@ -7,8 +7,36 @@ services:
     command: yarn dev
     environment:
       NODE_ENV: development
+      HOST: "mysql"
+      PORT: "3306"
+      USER: "root"
+      PASS: "admin"
+      DATABASE: "test"
     ports:
       - '3000:3000'
     volumes:
       - .:/app
+    networks:
+      - backend
+  mysql:
+    image: mysql:5.7.24
+    #環境変数設定。タイムゾーンを日本時間に設定。
+    environment:
+      - TZ=Asia/Tokyo
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=admin
+    ports:
+      - '3306:3306'
+    volumes:
+      #mysqlのデフォルト設定ファイルを上書き。:roでコンテナ側からは読み取り専用設定。
+      - ./mysql/conf:/etc/mysql/conf.d/:ro
+      #mysqldataにマウントすることで、コンテナを削除してもデーターは残るように設定。
+      - mysqldata:/var/lib/mysql
+    networks:
+      - backend
+networks:
+  backend:
+
+volumes:
+  mysqldata:
 

@@ -1,5 +1,7 @@
-next step
-- ssh aws instance.
-- show docker run command from bash history. command is history.
-- refer to the next line. do continuous deployment.
-  - https://qiita.com/gdtypk/items/aea503db22dfc79f4e9e
+# Awesome Project Build with TypeORM
+
+Steps to run this project:
+
+1. Run `npm i` command
+2. Setup database settings inside `ormconfig.json` file
+3. Run `npm start` command

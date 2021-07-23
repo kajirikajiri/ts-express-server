@@ -20,6 +20,11 @@ jobs:
           ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
           SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
           SECURITY_GROUP: ${{ secrets.SECURITY_GROUP_ID }}
+          MYSQL_HOST: ${{ secrets.PROD_MYSQL_HOST }}
+          MYSQL_PORT: ${{ secrets.PROD_MYSQL_PORT }}
+          MYSQL_USER: ${{ secrets.PROD_MYSQL_USER }}
+          MYSQL_PASS: ${{ secrets.PROD_MYSQL_PASS }}
+          MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
         run: |
           # https://github.com/haythem/public-ip
           IP_ADDRESS=`echo ${{ steps.ip.outputs.ipv4 }}`
@@ -39,14 +44,18 @@ jobs:
 
           # SSH接続して、git pullする
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
-          cd /home/ec2-user &&
-          if [ $(docker ps -q | wc -l) != 0 ] ; then docker stop $(docker ps -q);fi &&
-          docker container prune --force &&
-          if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi &&
-          docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest &&
-          docker run -d -p 3000:3000 $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")
-          '
+          command1='if [ $(docker ps -q | wc -l) != 0 ] ; then docker stop $(docker ps -q);fi && docker container prune --force && if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi && docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest && docker run -d -p 3000:3000 -e HOST='
+          command2=${MYSQL_HOST}
+          command3=' -e PORT='
+          command4=${MYSQL_PORT}
+          command5=' -e USER='
+          command6=${MYSQL_USER}
+          command7=' -e PASS='
+          command8=${MYSQL_PASS}
+          command9=' -e DATABASE='
+          command10=${MYSQL_DATABASE}
+          command11=' $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")'
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} $command1$command2$command3$command4$command5$command6$command7$command8$command9$command10$command11
 
           # SSHのポートを閉じる
           aws --profile eyemovic-dev ec2 revoke-security-group-ingress --group-id ${SECURITY_GROUP} --protocol tcp --port 22 --cidr "$IP_ADDRESS"/32
