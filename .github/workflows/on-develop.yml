@@ -1,8 +1,11 @@
 name: publish and run docker image
 on:
-  push:
+  workflow_dispatch:
     branches:
       - develop
+  push:
+    branches:
+      - master
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
