@@ -146,6 +146,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} $command1$command2$command3$command4$command5$command6$command7$command8$command9$command10$command11
       - name: Close port
         env:
+          ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
           SECURITY_GROUP: ${{ secrets.SECURITY_GROUP_ID }}
         if: ${{ always() }}
         run: |
