@@ -63,7 +63,7 @@ jobs:
           docker container prune --force &&
           if [ $(docker images -q | wc -l) != 0 ] ; then docker rmi $(docker images -q);fi &&
           docker pull ghcr.io/kajirikajiri/ts-express-server/ts-express-server:latest &&
-          docker run -d -p 3000:3000 $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}") -e HOST=${MYSQL_HOST} -e PORT=${MYSQL_PORT} -e USER=${MYSQL_USER} -e PASS=${MYSQL_PASS} -e DATABASE=${MYSQL_DATABASE}
+          docker run -d -p 3000:3000 -e HOST=${MYSQL_HOST} -e PORT=${MYSQL_PORT} -e USER=${MYSQL_USER} -e PASS=${MYSQL_PASS} -e DATABASE=${MYSQL_DATABASE} $(docker images --filter=reference=ghcr.io/kajirikajiri/ts-express-server/ts-express-server --format "{{.ID}}")
           '
 
           # SSHのポートを閉じる
