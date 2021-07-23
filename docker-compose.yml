@@ -14,11 +14,13 @@ services:
     networks:
       - backend
   mysql:
-    image: mysql:8
-    env_file: ./mysql.env
+    image: mysql:5.7.24
+    # env_file: ./mysql.env
     #環境変数設定。タイムゾーンを日本時間に設定。
     environment:
       - TZ=Asia/Tokyo
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=admin
     ports:
       - '3306:3306'
     volumes:

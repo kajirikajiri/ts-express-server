@@ -1,14 +1,33 @@
-import express from 'express'
-const app: express.Express = express()
+import "reflect-metadata";
+import {createConnection} from "typeorm";
+// import {User} from "./entity/User";
 
-// Constants
-const PORT = 3000;
-const HOST = '0.0.0.0';
+createConnection({
+  type: "mysql",
+  host: "mysql",
+  port: 3306,
+  username: "root",
+  password: "admin",
+  database: "test",
+  entities: [
+      // User
+  ],
+  synchronize: true,
+  logging: false
+}).then(async connection => {
 
-// App
-app.get('/', (req, res) => {
-  res.send('Hello World 3');
-});
+    console.log("Inserting a new user into the database...");
+    // const user = new User();
+    // user.firstName = "Timber";
+    // user.lastName = "Saw";
+    // user.age = 25;
+    // await connection.manager.save(user);
+    // console.log("Saved a new user with id: " + user.id);
 
-app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+    // console.log("Loading users from the database...");
+    // const users = await connection.manager.find(User);
+    // console.log("Loaded users: ", users);
+
+    console.log("Here you can setup and run express/koa/any other framework.");
+
+}).catch(error => console.log(error));
