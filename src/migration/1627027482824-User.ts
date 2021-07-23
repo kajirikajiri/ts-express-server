@@ -8,8 +8,33 @@ export class User1627027482824 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'int'
-          }
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'firstName',
+            type: 'varchar',
+          },
+          {
+            name: 'lastName',
+            type: 'varchar',
+          },
+          {
+            name: 'isActive',
+            type: 'boolean',
+          },
+          {
+            name: 'createdAt',
+            type: 'timestamp',
+            default: 'now()'
+          },
+          {
+            name: 'updatedAt',
+            type: 'timestamp',
+            default: 'now()'
+          },
         ]
       }), true)
     }
