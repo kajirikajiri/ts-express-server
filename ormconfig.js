@@ -1,4 +1,3 @@
-console.log('hoge',process.env.HOST, process.env.PORT)
 module.exports = {
    "type": "mysql",
    "host": process.env.HOST,
