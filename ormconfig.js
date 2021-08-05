@@ -5,6 +5,8 @@ module.exports = {
   "username": process.env.USER,
   "password": process.env.PASS,
   "database": process.env.DATABASE,
+  "connectTimeout": 100000,
+  "acquireTimeout": 100000,
   "synchronize": false,
   "logging": false,
   "entities": [
