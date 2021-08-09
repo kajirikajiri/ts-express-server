@@ -12,7 +12,7 @@ const PORT = 3000;
 const HOST = '0.0.0.0';
 
 // App
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   connection.then(connection=>{
     const user = new User()
     user.firstName = 'tarou'
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
   res.send('Hello World 3');
 });
 
-app.get('/get', (req, res) => {
+app.get('/get', (_, res) => {
   connection.then(async connection => {
     const userRepository = connection.getRepository(User)
     const all = await userRepository.find()
