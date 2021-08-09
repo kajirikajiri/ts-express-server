@@ -36,5 +36,9 @@ app.get('/get', (req, res) => {
   res.send('hello hello')
 })
 
+app.get('/health', (_, res) => {
+  res.send('d(^_^)')
+})
+
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
