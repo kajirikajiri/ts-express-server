@@ -16,6 +16,7 @@
   },
   "scripts": {
     "dev": "yarn typeorm migration:run && nodemon -L",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "diagram": "pipenv run python ./diagram/diagram.py && mv web_service.png diagram/"
   }
 }
