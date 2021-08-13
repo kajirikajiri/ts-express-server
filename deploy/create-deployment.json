@@ -1,0 +1,12 @@
+{
+  "applicationName": "AppECS-sample-cluster-production",
+  "deploymentGroupName": "DgpECS-sample-cluster-production",
+  "revision": {
+    "revisionType": "S3",
+    "s3Location": {
+      "bucket": "codedeploybucketkajiri",
+      "key": "appspec.yml",
+      "bundleType": "YAML"
+    }
+  }
+}
