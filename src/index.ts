@@ -9,7 +9,7 @@ const HOST = '0.0.0.0';
 
 // App
 app.get('/', (_, res) => {
-  res.send('/')
+  res.send('!')
 });
 
 app.get('/health', (_, res) => {
