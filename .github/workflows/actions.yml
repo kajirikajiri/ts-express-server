@@ -57,7 +57,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-1
     - name: deploy to stg
-      if: (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+      if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
       shell: bash
       run: |
         sh deploying-to-staging-flow.sh
+    - name: deploy to prod
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      shell: bash
+      run: |
+        sh deploy/deploying-to-production-flow.sh
