@@ -31,4 +31,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/ts-express-server:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/ts-express-server:${GITHUB_REF##*/}
             ghcr.io/${{ github.repository }}/ts-express-server:latest
