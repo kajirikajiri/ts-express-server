@@ -40,10 +40,8 @@ jobs:
             ghcr.io/${{ github.repository }}/ts-express-server:${{ github.sha }}
             ghcr.io/${{ github.repository }}/ts-express-server:${{ steps.extract_branch.outputs.branch }}
             ghcr.io/${{ github.repository }}/ts-express-server:latest
-  deploy_to_staging:
+  deploy:
     needs: push_to_github_container_registry
-    if: |
-      (github.event_name == 'push' && github.ref == 'refs/heads/develop')
     name: Deploy to aws
     runs-on: ubuntu-latest
     permissions:
@@ -58,7 +56,13 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-1
-    - name: deploy
+    - name: deploy to stg
+      if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
       shell: bash
       run: |
-        sh deploying-to-staging-flow.sh
+        sh deploy/deploying-to-staging-flow.sh
+    - name: deploy to prod
+      if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      shell: bash
+      run: |
+        sh deploy/deploying-to-production-flow.sh
