@@ -3,10 +3,10 @@
 . deploy/stop-staging-task.sh
 stopStagingTask
 
-# task desired count to 1. as a result execute the task.
+# Start blue/green deployment.
 deploymentId=$(aws deploy create-deployment --region ap-northeast-1 --cli-input-json file://deploy/create-deployment.json|jq -r '.deploymentId')
 
-# repeat to confirm execute the task
+# repeat to confirm deployment succeeded
 while :
 do
 instanceTerminationWaitTimeStarted=$(aws deploy get-deployment --deployment-id $deploymentId|jq -r '.deploymentInfo.instanceTerminationWaitTimeStarted')
