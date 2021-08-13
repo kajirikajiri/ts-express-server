@@ -9,7 +9,10 @@ on:
       - master
 jobs:
   push_to_registry:
-    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||  (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop') || \
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') || \
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
