@@ -1,7 +1,11 @@
 # Getting Started
 
-1. Run `docker-compose up` command
+docker-compose up
 
-# infrastructure design
+# Generate infrastructure diagram
+
+yarn diagram
+
+# Infrastructure design
 
 ![](./diagram/web_service.png)
