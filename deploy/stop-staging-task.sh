@@ -1,4 +1,4 @@
-function stopStagingTask() {
+stopStagingTask() {
   # get task arn
   task=$(aws ecs list-tasks --cluster sample-cluster --service staging|jq -r '.taskArns[0]')
 
