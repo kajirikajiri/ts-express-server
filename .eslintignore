@@ -1,0 +1,8 @@
+node_modules
+.github
+deploy
+diagram
+mysql
+.eslintrc.js
+ormconfig.js
+

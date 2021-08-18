@@ -1,0 +1,15 @@
+node_modules
+.github
+deploy
+diagram
+mysql
+.eslintrc.js
+ormconfig.js
+.eslintignore
+.husky
+.prettierignore
+yarn.lock
+
+# https://prettier.io/docs/en/install.html
+# Another tip! If your project isn’t ready to format, say, HTML files yet, add *.html.
+*.html

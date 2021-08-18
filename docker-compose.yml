@@ -1,4 +1,4 @@
-version: '2.1'
+version: "2.1"
 services:
   web:
     build:
@@ -13,7 +13,7 @@ services:
       PASS: "admin"
       DATABASE: "test"
     ports:
-      - '4000:3000'
+      - "4000:3000"
     volumes:
       - .:/app
     networks:
@@ -28,7 +28,7 @@ services:
       - MYSQL_DATABASE=test
       - MYSQL_ROOT_PASSWORD=admin
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
       #mysqlのデフォルト設定ファイルを上書き。:roでコンテナ側からは読み取り専用設定。
       - ./mysql/conf:/etc/mysql/conf.d/:ro
@@ -41,4 +41,3 @@ networks:
 
 volumes:
   mysqldata:
-
