@@ -13,11 +13,13 @@ services:
       PASS: "admin"
       DATABASE: "test"
     ports:
-      - '3000:3000'
+      - '4000:3000'
     volumes:
       - .:/app
     networks:
       - backend
+    depends_on:
+      - mysql
   mysql:
     image: mysql:5.7.24
     #環境変数設定。タイムゾーンを日本時間に設定。
