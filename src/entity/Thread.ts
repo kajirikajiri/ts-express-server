@@ -1,18 +1,29 @@
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ScrapThreadRelation } from "./ScrapThreadRelation";
 
 @Entity()
 export class Thread {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   readonly id!: string;
 
-  @Column('varchar')
+  @Column("varchar")
   text!: string;
 
-  @Column({type: 'uuid', nullable: true})
+  @Column({ type: "uuid", nullable: true })
   parentThreadId: null | string;
 
-  @OneToMany(() => ScrapThreadRelation, scrapThreadRelation => scrapThreadRelation.thread, {onDelete: 'CASCADE'})
+  @OneToMany(
+    () => ScrapThreadRelation,
+    (scrapThreadRelation) => scrapThreadRelation.thread,
+    { onDelete: "CASCADE" }
+  )
   scrapThreadRelations: ScrapThreadRelation[];
 
   @CreateDateColumn()
@@ -22,7 +33,6 @@ export class Thread {
   deletedAt?: Date;
 
   constructor(text: string) {
-    this.text = text
+    this.text = text;
   }
 }
-
