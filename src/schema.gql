@@ -1,0 +1,80 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Thread {
+  id: String!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Scrap {
+  id: String!
+  title: String!
+  createdAt: DateTime!
+}
+
+type UserScrapRelation {
+  """Example field (placeholder)"""
+  userId: String!
+}
+
+type Query {
+  scraps: [Scrap!]!
+  scrap(id: String!): Scrap!
+  threads: [Thread!]!
+  thread(id: String!): Thread!
+  userScrapRelations: [UserScrapRelation!]!
+  userScrapRelation(id: Int!): UserScrapRelation!
+}
+
+type Mutation {
+  createScrap(createScrapInput: CreateScrapInput!): Scrap!
+  updateScrap(updateScrapInput: UpdateScrapInput!): Scrap!
+  removeScrap(id: String!): Scrap!
+  createThread(createThreadInput: CreateThreadInput!): Thread!
+  updateThread(updateThreadInput: UpdateThreadInput!): Thread!
+  removeThread(id: String!): Thread!
+  createUserScrapRelation(createUserScrapRelationInput: CreateUserScrapRelationInput!): UserScrapRelation!
+  updateUserScrapRelation(updateUserScrapRelationInput: UpdateUserScrapRelationInput!): UserScrapRelation!
+  removeUserScrapRelation(id: Int!): UserScrapRelation!
+}
+
+input CreateScrapInput {
+  title: String!
+  userId: String!
+}
+
+input UpdateScrapInput {
+  title: String
+  userId: String
+  id: String!
+}
+
+input CreateThreadInput {
+  text: String!
+  parentId: String
+  scrapId: String!
+}
+
+input UpdateThreadInput {
+  text: String
+  parentId: String
+  scrapId: String
+  id: String!
+}
+
+input CreateUserScrapRelationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateUserScrapRelationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}

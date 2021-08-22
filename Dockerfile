@@ -5,5 +5,6 @@ COPY package.json $APP_ROOT
 COPY yarn.lock $APP_ROOT
 RUN yarn
 COPY . $APP_ROOT
+RUN yarn build
 EXPOSE 3000
-CMD ["yarn", "dev" ]
+CMD ["yarn", "start:prod"]

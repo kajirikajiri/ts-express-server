@@ -1,9 +1,9 @@
-import {MigrationInterface, QueryRunner, Table} from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class User1627027482824 implements MigrationInterface {
-
-    public async up(queryRunner: QueryRunner): Promise<void> {
-      queryRunner.createTable(new Table({
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    queryRunner.createTable(
+      new Table({
         name: 'user',
         columns: [
           {
@@ -28,19 +28,20 @@ export class User1627027482824 implements MigrationInterface {
           {
             name: 'createdAt',
             type: 'timestamp',
-            default: 'now()'
+            default: 'now()',
           },
           {
             name: 'updatedAt',
             type: 'timestamp',
-            default: 'now()'
+            default: 'now()',
           },
-        ]
-      }), true)
-    }
+        ],
+      }),
+      true,
+    );
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-      queryRunner.dropTable('user')
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    queryRunner.dropTable('user');
+  }
 }

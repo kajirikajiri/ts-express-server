@@ -1,10 +1,10 @@
-version: '2.1'
+version: "2.1"
 services:
   web:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: yarn dev
+    command: yarn start:dev
     environment:
       NODE_ENV: development
       HOST: "mysql"
@@ -13,11 +13,13 @@ services:
       PASS: "admin"
       DATABASE: "test"
     ports:
-      - '3000:3000'
+      - "4000:3000"
     volumes:
       - .:/app
     networks:
       - backend
+    depends_on:
+      - mysql
   mysql:
     image: mysql:5.7.24
     #環境変数設定。タイムゾーンを日本時間に設定。
@@ -26,7 +28,7 @@ services:
       - MYSQL_DATABASE=test
       - MYSQL_ROOT_PASSWORD=admin
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
       #mysqlのデフォルト設定ファイルを上書き。:roでコンテナ側からは読み取り専用設定。
       - ./mysql/conf:/etc/mysql/conf.d/:ro
@@ -39,4 +41,3 @@ networks:
 
 volumes:
   mysqldata:
-
