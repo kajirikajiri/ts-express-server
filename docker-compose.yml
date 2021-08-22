@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: yarn dev
+    command: yarn start:dev
     environment:
       NODE_ENV: development
       HOST: "mysql"
