@@ -33,6 +33,18 @@ const options = process.env.NODE_ENV == 'development' ? developmentOptions : {};
       // https://docs.nestjs.com/graphql/quick-start#:~:text=To%20use%20the%20code%20first%20approach%2C%20start%20by%20adding%20the%20autoSchemaFile%20property%20to%20the%20options%20object%3A
       // To use the code first approach, start by adding the autoSchemaFile property to the options object:
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+
+      cors: {
+        origin: [
+          process.env.NODE_ENV === 'production'
+            ? 'https://memo.kajiri.dev'
+            : 'http://localhost:3000',
+        ],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+        credentials: true,
+      },
     }),
     ScrapsModule,
     ThreadsModule,
