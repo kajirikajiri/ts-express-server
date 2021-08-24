@@ -16,6 +16,7 @@ export class Thread {
   @PrimaryGeneratedColumn('uuid')
   readonly id!: string;
 
+  @Field()
   @Column('varchar')
   text!: string;
 

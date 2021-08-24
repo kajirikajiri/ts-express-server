@@ -33,8 +33,13 @@ export class ThreadsService {
     return thread;
   }
 
-  findAll() {
-    return this.threadRepository.find();
+  findAll(scrapId: string) {
+    return this.threadRepository
+      .createQueryBuilder('thread')
+      .leftJoinAndSelect('thread.scraps', 'scrap', 'scrap.id = :scrapId', {
+        scrapId,
+      })
+      .getMany();
   }
 
   findOne(id: string) {

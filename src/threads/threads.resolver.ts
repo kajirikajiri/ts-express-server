@@ -16,8 +16,8 @@ export class ThreadsResolver {
   }
 
   @Query(() => [Thread], { name: 'threads' })
-  findAll() {
-    return this.threadsService.findAll();
+  findAll(@Args('scrapId', { type: () => String }) scrapId: string) {
+    return this.threadsService.findAll(scrapId);
   }
 
   @Query(() => Thread, { name: 'thread' })
