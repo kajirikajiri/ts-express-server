@@ -4,6 +4,7 @@
 
 type Thread {
   id: String!
+  text: String!
   createdAt: DateTime!
 }
 
@@ -26,7 +27,7 @@ type UserScrapRelation {
 type Query {
   scraps: [Scrap!]!
   scrap(id: String!): Scrap!
-  threads: [Thread!]!
+  threads(scrapId: String!): [Thread!]!
   thread(id: String!): Thread!
   userScrapRelations: [UserScrapRelation!]!
   userScrapRelation(id: Int!): UserScrapRelation!
