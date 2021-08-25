@@ -33,12 +33,12 @@ export class ThreadsService {
     return thread;
   }
 
-  findAll(scrapId: string) {
+  async findAll(scrapId: string) {
     return this.threadRepository
       .createQueryBuilder('thread')
-      .leftJoinAndSelect('thread.scraps', 'scrap', 'scrap.id = :scrapId', {
-        scrapId,
-      })
+      .leftJoin('thread.scraps', 'scrap')
+      .where('scrap.id = :scrapId', { scrapId })
+      .orderBy('thread.createdAt', 'ASC')
       .getMany();
   }
 

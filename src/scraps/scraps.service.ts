@@ -30,7 +30,7 @@ export class ScrapsService {
   }
 
   findAll() {
-    return this.scrapRepository.find();
+    return this.scrapRepository.find({ order: { createdAt: 'DESC' } });
   }
 
   findOne(id: string) {
